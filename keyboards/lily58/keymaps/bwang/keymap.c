@@ -19,7 +19,8 @@ extern rgblight_config_t rgblight_config;
 extern uint8_t is_master;
 
 #define _BASE 0
-#define _FN 1
+#define _GAME 1
+#define _FN 2
 
 enum custom_keycodes {
   BASE = SAFE_RANGE,
@@ -50,15 +51,38 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   KC_LSFT,  KC_Z,   KC_X,    KC_C,    KC_V,    KC_B,   KC_MINS,  KC_EQL, KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH, KC_RSFT, \
                              KC_LGUI, KC_LALT, KC_SPC, KC_GRV,   KC_ENT, KC_SPC,  MO(_FN), KC_RBRC \
 ),
+/* Gaming
+ * ,-----------------------------------------.                    ,-----------------------------------------.
+ * |   `  |      |      |      |      |      |                    |      |      |      |      |      |      |
+ * |------+------+------+------+------+------|                    |------+------+------+------+------+------|
+ * |      |      |      |      |      |      |                    |      |      |      |      |      |      |
+ * |------+------+------+------+------+------|                    |------+------+------+------+------+------|
+ * |      |      |      |      |      |      |-------.    ,-------|      |      |      |      |      |      |
+ * |------+------+------+------+------+------|   6   |    | RGUI  |------+------+------+------+------+------|
+ * |      |      |      |      |      |      |-------|    |-------|      |      |      |      |      |      |
+ * `-----------------------------------------/       /     \      \-----------------------------------------'
+ *                   | LAlt |      |      | /  ESC  /       \      \  |      |      |      |
+ *                   |      |      |      |/       /         \      \ |      |      |      |
+ *                   `----------------------------'           '------''--------------------'
+ */
+
+[_GAME] = LAYOUT( \
+  KC_GRV,  _______, _______, _______, _______, _______,                     _______, _______, _______, _______, _______, _______,  \
+  _______, _______, _______, _______, _______, _______,                     _______, _______, _______, _______, _______, _______,  \
+  _______, _______, _______, _______, _______, _______,                     _______, _______, _______, _______, _______, _______,  \
+  _______, _______, _______, _______, _______, _______,  KC_6,    KC_RGUI,  _______, _______, _______, _______, _______, _______, \
+                             KC_LALT, _______, _______,  KC_ESC,  _______,  _______, _______, _______ \
+),
+
 /* FN
  * ,-----------------------------------------.                    ,-----------------------------------------.
  * |   `  |  F1  |  F2  |  F3  |  F4  |  F5  |                    |  F6  |  F7  |  F8  |  F9  | F10  | F11  |
  * |------+------+------+------+------+------|                    |------+------+------+------+------+------|
- * |      | Home |  Up  | End  | PgUp |      |                    |      |      |      |      |      | F12  |
+ * |      | Home |  Up  | End  | PgUp |      |                    |      |      |  Up  |      |      | F12  |
  * |------+------+------+------+------+------|                    |------+------+------+------+------+------|
- * |      | Left | Down | Right| PgDn |      |-------.    ,-------|      |      |      |      |      |PrtScr|
- * |------+------+------+------+------+------|       |    |       |------+------+------+------+------+------|
- * |      |      |      |      |      |      |-------|    |-------|      |      |      |      |      |      |
+ * |      | Left | Down | Right| PgDn |      |-------.    ,-------|      | Left | Down | Right|      |PrtScr|
+ * |------+------+------+------+------+------|       |    |Gaming |------+------+------+------+------+------|
+ * |      |      |      |      |      |      |-------|    |-------|      |      |      |      |  \   |      |
  * `-----------------------------------------/       /     \      \-----------------------------------------'
  *                   |      |      |      | /       /       \      \  |      |      |      |
  *                   |      |      |      |/       /         \      \ |      |      |      |
@@ -67,9 +91,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 [_FN] = LAYOUT( \
   KC_GRV,  KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_F5,                       KC_F6,   KC_F7,   KC_F8,   KC_F9,   KC_F10,  KC_F11,  \
-  _______, KC_HOME, KC_UP,   KC_END,  KC_PGUP, _______,                     _______, _______, _______, _______, _______, KC_F12,  \
-  _______, KC_LEFT, KC_DOWN, KC_RGHT, KC_PGDN, _______,                     _______, _______, _______, _______, _______, KC_PSCR, \
-  _______, _______, _______, _______, _______, _______,  _______, _______,  _______, _______, _______, _______, _______, _______, \
+  _______, KC_HOME, KC_UP,   KC_END,  KC_PGUP, _______,                     _______, _______, KC_UP,   _______, _______, KC_F12,  \
+  _______, KC_LEFT, KC_DOWN, KC_RGHT, KC_PGDN, _______,                     _______, KC_LEFT, KC_DOWN, KC_RGHT, _______, KC_PSCR, \
+  _______, _______, _______, _______, _______, _______,  _______, TG(_GAME),_______, _______, _______, _______, KC_BSLS, _______, \
                              _______, _______, _______,  _______, _______,  _______, _______, _______ \
 )
 };
@@ -87,11 +111,13 @@ void matrix_init_user(void) {
 // When add source files to SRC in rules.mk, you can use functions.
 const char *read_layer_state(void);
 const char *read_logo(void);
+const char *read_apm(void);
 
 //const char *read_mode_icon(bool swap);
 // const char *read_host_led_state(void);
 //void set_timelog(void);
 //const char *read_timelog(void);
+void record_apm_action(void);
 
 void matrix_scan_user(void) {
    iota_gfx_task();
@@ -101,6 +127,7 @@ void matrix_render_user(struct CharacterMatrix *matrix) {
   if (is_master) {
     // If you want to change the display of OLED, you need to change here
     matrix_write_ln(matrix, read_layer_state());
+    matrix_write_ln(matrix, read_apm());
     //matrix_write_ln(matrix, read_keylog());
     //matrix_write_ln(matrix, read_keylogs());
     //matrix_write_ln(matrix, read_mode_icon(keymap_config.swap_lalt_lgui));
@@ -131,6 +158,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   if (record->event.pressed) {
 #ifdef SSD1306OLED
     //set_timelog();
+    record_apm_action();
 #endif
   }
   return true;
