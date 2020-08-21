@@ -31,3 +31,4 @@ BLUETOOTH_ENABLE = no       # Enable Bluetooth with the Adafruit EZ-Key HID
 AUDIO_ENABLE = no           # Audio output on port C6
 ENCODER_ENABLE = yes        # Enable rotary encoder support
 OLED_DRIVER_ENABLE = yes
+RAW_ENABLE = yes

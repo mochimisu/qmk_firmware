@@ -57,3 +57,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define LOCKING_RESYNC_ENABLE
 
 #define OLED_FONT_H "lib/glcdfont_mochimisu.c"
+
+#define RAW_USAGE_PAGE 0xFF60
+#define RAW_USAGE_ID 0x61
