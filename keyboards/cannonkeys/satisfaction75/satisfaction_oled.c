@@ -264,4 +264,9 @@ void draw_clock() {
     draw_line_v(113, 8, 8);
 }
 
+#else
+
+void oled_request_repaint(void) {}
+void oled_request_wakeup(void) {}
+
 #endif
