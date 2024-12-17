@@ -4,14 +4,14 @@
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [0] = LAYOUT(/* Base */
-            KC_ESC, RGB_TOG, KC_ENT, KC_TRNS,
+            RGB_HUI, RGB_TOG, KC_ENT, KC_TRNS,
             KC_MPRV, KC_MPLY, KC_MNXT, KC_TRNS,
             KC_HOME, KC_UP, KC_END, KC_TRNS,
             KC_LEFT, KC_DOWN, KC_RIGHT
             ),
 };
 
-#if OLED_DRIVER_ENABLE
+#ifdef OLED_ENABLE
 // HID input, using node-hid, following example from BlankSourceCode:
 // https://github.com/BlankSourceCode/qmk-hid-display
 bool is_hid_connected = false;
@@ -70,13 +70,14 @@ const char *read_logo(void) {
   return logo;
 }
 
-void oled_task_user(void) {
+bool oled_task_user(void) {
     if (is_hid_connected)
     {
         oled_write((char*)screen_data_buffer, false);
     } else {
         oled_write(read_logo(), false);
     }
+    return false;
 }
 void next_screen(void)
 {
@@ -124,6 +125,6 @@ bool encoder_update_user(uint8_t index, bool clockwise) {
         tap_code(KC_MS_WH_UP);
     }
   }
-  return true;
+  return false;
 }
 
