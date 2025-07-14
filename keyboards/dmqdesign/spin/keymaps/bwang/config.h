@@ -16,6 +16,8 @@
 
 #pragma once
 
+#define OLED_FONT_H "lib/glcdfont_mochimisu.c"
+
 #define RGBLIGHT_HUE_STEP 8
 
 // place overrides here
